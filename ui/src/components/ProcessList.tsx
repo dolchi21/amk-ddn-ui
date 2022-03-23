@@ -1,11 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+const STATUS_ORDER: any = {
+    running: 0,
+    error: 8,
+    done: 9
+}
+
 const ms2p = (state: any) => {
-    //@ts-ignore
-    const items = Object.entries(state.data.processes || []).map(([key, value]) => ({ ...value, key })).sort((a: any, b: any) => {
-        return a.key.localeCompare(b.key)
-    })
+    const items = Object.entries(state.data.processes || []).map(([key, value]: any) => ({
+        ...value,
+        key,
+        //order: value.updatedAt,
+        order: `${STATUS_ORDER[value.status]}/${key}`
+        //order: key
+    })).sort((a: any, b: any) => a.order.localeCompare(b.order))
     return { items }
 }
 
@@ -14,9 +23,9 @@ const md2p = (dispatch: any) => ({
 })
 
 const ProgressColor: any = {
-    'done': 'bg-success',
-    'error': 'bg-danger',
-    'running': 'bg-info'
+    done: 'bg-success',
+    error: 'bg-danger',
+    running: 'bg-info'
 }
 const Progress = (process: any) => {
     const progress = (process.totalDocuments ? process.processedDocuments / process.totalDocuments : 1) * 100
@@ -37,10 +46,11 @@ const Process = (process: any) => {
                 <small>{date.toLocaleString()}</small>
             </div>
             <p className="mb-1">
-                Generación de emails de <strong>Grupo{process.entityId}</strong>. Se generaron {process.emailsGenerated} emails.
+                Generación de emails de {process?.clientData?.name} <strong>Grupo{process.entityId}</strong>.
             </p>
             <Progress {...process} />
-            <small title={JSON.stringify(process)}>And some small print.</small>
+            {process.error && <small>Error: {process.error}.</small>}
+            {!process.error && <small title={JSON.stringify(process)}>Se generaron {process.emailsGenerated} emails.</small>}
         </React.Fragment>
     )
 }

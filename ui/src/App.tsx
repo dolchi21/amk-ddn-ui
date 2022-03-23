@@ -16,7 +16,7 @@ function App() {
 const CApp = (props: any) => {
     const store = makeStore()
     //A.loadProcesses(store.dispatch)
-    A.autoLoadProcesses(store.dispatch, store.getState)
+    setTimeout(() => A.autoLoadProcesses(store.dispatch, store.getState))
     return (
         <Provider store={store}>
             <App {...props} />
