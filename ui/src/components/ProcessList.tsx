@@ -17,7 +17,10 @@ function getContrastYIQ(hexcolor: string) {
     }
 }
 function colors(str: any) {
-    const hash = md5(str).toString()
+    //@ts-ignore
+    //const data = window.COLORS_SEED ? window.COLORS_SEED + str : str
+    const data = str + new Date().toISOString().substr(0, 16)
+    const hash = md5(data).toString()
     const color0 = `#${hash.substr(0, 3)}`
     const color1 = getContrastYIQ(color0)
     return [color0, color1]
@@ -54,11 +57,15 @@ const Process = (process: any) => {
                 <small>{date.toLocaleString()}</small>
             </div>
             <p className="mb-1">
-                Generación de emails de {process?.clientData?.name} <strong>Grupo{process.entityId}</strong>.
+                Generación de emails de {process?.clientData?.name} <strong style={{
+                    color: colors(process.entityId.toString())[0]
+                }}>Grupo{process.entityId}</strong>.
             </p>
             <Progress {...process} />
-            {process.error && <small>Error: {process.error}.</small>}
-            {!process.error && <small title={JSON.stringify(process)}>Se generaron {process.emailsGenerated} emails.</small>}
+            <div title={JSON.stringify(process, null, 2)}>
+                {process.error && <small>Error: {process.error}.</small>}
+                {!process.error && <small>Se generaron <strong style={{ color: colors(process.emailsGenerated.toString())[0] }}>{process.emailsGenerated}</strong> emails.</small>}
+            </div>
         </React.Fragment>
     )
 }
