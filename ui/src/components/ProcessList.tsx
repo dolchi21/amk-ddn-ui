@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { enqueue } from '../actions'
 
 const STATUS_ORDER: any = {
     running: 0,
@@ -21,14 +22,12 @@ const ms2p = (state: any) => {
     return { items }
 }
 
-const md2p = (dispatch: any) => ({
-
-})
+const md2p = (dispatch: any) => ({ dispatch })
 
 const ProgressColor: any = {
     done: 'bg-success',
     error: 'bg-danger',
-    running: 'bg-info'
+    running: 'bg-info progress-bar-striped progress-bar-animated'
 }
 const Progress = (process: any) => {
     const progress = (process.totalDocuments ? process.processedDocuments / process.totalDocuments : 1) * 100
@@ -64,19 +63,26 @@ const ProcessTitleBreadcrumb = (process: any) => (
         <li className="breadcrumb-item">{process?.clientData?.name}</li>
     </ol>
 )
-const ProcessTitle = (process: any) => (
-    <h5 className="mb-1">
+const ProcessTitle = connect(null, md2p)((process: any) => (
+    <h5 className="mb-1" style={{ cursor: 'pointer' }} onClick={() => {
+        const action = enqueue(process.client, process.entityId)
+        action(process.dispatch)
+    }}>
         <span className="badge bg-dark">{process.client}</span>
         <small className="ms-2 u-clientName">{process?.clientData?.name}</small>
     </h5>
-)
+))
 
+const ListItemClass: any = {
+    //done: 'list-group-item-success',
+    error: 'list-group-item-danger'
+}
 const List = (props: any) => {
     return (
         <ul className="list-group">
             {props.items.map((process: any) => {
                 return (
-                    <li key={process.key} className="list-group-item">
+                    <li key={process.key} className={`list-group-item ${ListItemClass[process.status]}`}>
                         <Process {...process} />
                     </li>
                 )

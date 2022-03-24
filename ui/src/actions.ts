@@ -19,3 +19,9 @@ export const autoLoadProcesses = async (dispatch: any, getState: any) => {
         await sleep(1000 * 1)
     }
 }
+
+export const enqueue = (client: string, entityId: number) => async (dispatch: any) => {
+    const res = await fetch(`http://icharlie.amtek.com.ar:3000/enqueue?client=${client}&entityId=${entityId}`)
+    const data = await res.json()
+    dispatch(Data.set({ queue: data }))
+}
