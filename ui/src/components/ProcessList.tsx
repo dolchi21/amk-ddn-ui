@@ -45,7 +45,7 @@ const Process = (process: any) => {
     return (
         <React.Fragment>
             <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">{key}</h5>
+                <ProcessTitle {...process} />
                 <small>{date.toLocaleString()}</small>
             </div>
             <p className="mb-1">
@@ -57,6 +57,19 @@ const Process = (process: any) => {
         </React.Fragment>
     )
 }
+
+const ProcessTitleBreadcrumb = (process: any) => (
+    <ol className="mb-1 breadcrumb">
+        <li className="breadcrumb-item">{process.client}</li>
+        <li className="breadcrumb-item">{process?.clientData?.name}</li>
+    </ol>
+)
+const ProcessTitle = (process: any) => (
+    <h5 className="mb-1">
+        <span className="badge bg-dark">{process.client}</span>
+        <small className="ms-2 u-clientName">{process?.clientData?.name}</small>
+    </h5>
+)
 
 const List = (props: any) => {
     return (
