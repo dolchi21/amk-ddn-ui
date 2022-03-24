@@ -8,13 +8,16 @@ const STATUS_ORDER: any = {
 }
 
 const ms2p = (state: any) => {
-    const items = Object.entries(state.data.processes || []).map(([key, value]: any) => ({
-        ...value,
-        key,
-        //order: value.updatedAt,
-        order: `${STATUS_ORDER[value.status]}/${key}`
-        //order: key
-    })).sort((a: any, b: any) => a.order.localeCompare(b.order))
+    const items = Object.entries(state.data.processes || []).map(([key, value]: any) => {
+        const date = new Date(value.updatedAt)
+        return {
+            ...value,
+            key,
+            //order: (Date.now() - date.valueOf()).toString()
+            order: `${STATUS_ORDER[value.status]}/${key}`
+            //order: key
+        }
+    }).sort((a: any, b: any) => a.order.localeCompare(b.order))
     return { items }
 }
 
@@ -59,9 +62,8 @@ const List = (props: any) => {
     return (
         <ul className="list-group">
             {props.items.map((process: any) => {
-                const key = `${process.client}:${process.entityId}`
                 return (
-                    <li key={key} className="list-group-item">
+                    <li key={process.key} className="list-group-item">
                         <Process {...process} />
                     </li>
                 )
