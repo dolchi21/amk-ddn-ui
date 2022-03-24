@@ -1,6 +1,27 @@
 import React from 'react'
 import { connect } from 'react-redux'
+//@ts-ignore
+import md5 from 'crypto-js/md5'
 import { enqueue } from '../actions'
+
+function getContrastYIQ(hexcolor: string) {
+    try {
+        hexcolor = hexcolor.replace("#", "");
+        var r = parseInt(hexcolor.substr(0, 2), 16);
+        var g = parseInt(hexcolor.substr(2, 2), 16);
+        var b = parseInt(hexcolor.substr(4, 2), 16);
+        var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return (yiq >= 128) ? 'black' : 'white';
+    } catch (err) {
+        return 'black'
+    }
+}
+function colors(str: any) {
+    const hash = md5(str).toString()
+    const color0 = `#${hash.substr(0, 3)}`
+    const color1 = getContrastYIQ(color0)
+    return [color0, color1]
+}
 
 const ms2p = (state: any) => {
     const items = (state.data.processes || []).sort((a: any, b: any) => a.order.localeCompare(b.order))
@@ -53,8 +74,13 @@ const ProcessTitle = connect(null, md2p)((process: any) => (
         const action = enqueue(process.client, process.entityId)
         action(process.dispatch)
     }}>
-        <span className="badge bg-dark">{process.client}</span>
-        <small className="ms-2 u-clientName">{process?.clientData?.name}</small>
+        <span className="badge" style={{
+            backgroundColor: colors(process.client)[0],
+            color: colors(process.client)[1]
+        }}>{process.client}</span>
+        <small className="ms-2 u-clientName" style={{
+            color: colors(process.client)[0]
+        }}>{process?.clientData?.name}</small>
     </h5>
 ))
 
