@@ -2,23 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { enqueue } from '../actions'
 
-const STATUS_ORDER: any = {
-    running: 0,
-    error: 8,
-    done: 9
-}
-
 const ms2p = (state: any) => {
-    const items = Object.entries(state.data.processes || []).map(([key, value]: any) => {
-        const date = new Date(value.updatedAt)
-        return {
-            ...value,
-            key,
-            //order: (Date.now() - date.valueOf()).toString()
-            order: `${STATUS_ORDER[value.status]}/${key}`
-            //order: key
-        }
-    }).sort((a: any, b: any) => a.order.localeCompare(b.order))
+    const items = (state.data.processes || []).sort((a: any, b: any) => a.order.localeCompare(b.order))
     return { items }
 }
 

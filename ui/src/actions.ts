@@ -2,10 +2,27 @@ import * as Data from './modules/Data'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+const STATUS_ORDER: any = {
+    running: 0,
+    error: 8,
+    done: 9
+}
 export const loadProcesses = async (dispatch: any) => {
     const res = await fetch('http://icharlie.amtek.com.ar:3000/state')
-    const processes = await res.json()
-    dispatch(Data.set({ processes, updatedAt: new Date() }))
+    const data = await res.json()
+    dispatch(Data.set({
+        processes: Object.entries(data).map(([key, value]: any) => {
+            const date = new Date(value.updatedAt)
+            return {
+                ...value,
+                key,
+                //order: (Date.now() - date.valueOf()).toString()
+                order: `${STATUS_ORDER[value.status]}/${key}`
+                //order: key
+            }
+        }),
+        updatedAt: new Date()
+    }))
 }
 
 export const autoLoadProcesses = async (dispatch: any, getState: any) => {
