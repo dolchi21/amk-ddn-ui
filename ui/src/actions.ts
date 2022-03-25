@@ -12,7 +12,7 @@ export const loadProcesses = async (dispatch: any) => {
     const data = await res.json()
     dispatch(Data.set({
         processes: Object.entries(data).map(([key, value]: any) => {
-            const date = new Date(value.updatedAt)
+            //const date = new Date(value.updatedAt)
             return {
                 ...value,
                 key,
@@ -41,4 +41,8 @@ export const enqueue = (client: string, entityId: number) => async (dispatch: an
     const res = await fetch(`http://icharlie.amtek.com.ar:3000/enqueue?client=${client}&entityId=${entityId}`)
     const data = await res.json()
     dispatch(Data.set({ queue: data }))
+}
+
+export const selectProcess = (key: string) => (dispatch: any) => {
+    dispatch(Data.set({ selected: key }))
 }

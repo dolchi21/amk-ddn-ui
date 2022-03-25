@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 //@ts-ignore
 import md5 from 'crypto-js/md5'
-import { enqueue } from '../actions'
+import { enqueue, selectProcess } from '../actions'
 
 function getContrastYIQ(hexcolor: string) {
     try {
@@ -28,7 +28,10 @@ function colors(str: any) {
 
 const ms2p = (state: any) => {
     const items = (state.data.processes || []).sort((a: any, b: any) => a.order.localeCompare(b.order))
-    return { items }
+    return {
+        items,
+        selected: state.data.selected
+    }
 }
 
 const md2p = (dispatch: any) => ({ dispatch })
@@ -48,7 +51,6 @@ const Progress = (process: any) => {
 }
 
 const Process = (process: any) => {
-    const key = `${process.client}:${process.entityId}`
     const date = new Date(process.updatedAt)
     return (
         <React.Fragment>
@@ -70,17 +72,14 @@ const Process = (process: any) => {
     )
 }
 
-const ProcessTitleBreadcrumb = (process: any) => (
-    <ol className="mb-1 breadcrumb">
-        <li className="breadcrumb-item">{process.client}</li>
-        <li className="breadcrumb-item">{process?.clientData?.name}</li>
-    </ol>
-)
-const ProcessTitle = connect(null, md2p)((process: any) => (
+const ProcessTitle = connect((state: any) => ({ selected: state.data.selected }), md2p)((process: any) => (
     <h5 className="mb-1" style={{ cursor: 'pointer' }} onClick={() => {
         const action = enqueue(process.client, process.entityId)
         action(process.dispatch)
     }}>
+        {`${process.client}:${process.entityId}` === process.selected && (
+            <i className="bi bi-caret-right-fill" style={{ marginRight: '0.5rem' }}></i>
+        )}
         <span className="badge" style={{
             backgroundColor: colors(process.client)[0],
             color: colors(process.client)[1]
@@ -100,7 +99,7 @@ const List = (props: any) => {
         <ul className="list-group">
             {props.items.map((process: any) => {
                 return (
-                    <li key={process.key} className={`list-group-item ${ListItemClass[process.status]}`}>
+                    <li key={process.key} className={`list-group-item ${ListItemClass[process.status]}`} onClick={() => selectProcess(props.selected === process.key ? null : process.key)(props.dispatch)}>
                         <Process {...process} />
                     </li>
                 )
