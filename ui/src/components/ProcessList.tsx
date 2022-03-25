@@ -19,7 +19,7 @@ function getContrastYIQ(hexcolor: string) {
 function colors(str: any) {
     //@ts-ignore
     //const data = window.COLORS_SEED ? window.COLORS_SEED + str : str
-    const data = str + new Date().toISOString().substr(0, 16)
+    const data = str + new Date().toISOString().substr(0, 18)
     const hash = md5(data).toString()
     const color0 = `#${hash.substr(0, 3)}`
     const color1 = getContrastYIQ(color0)
@@ -59,7 +59,7 @@ const Process = (process: any) => {
                 <small>{date.toLocaleString()}</small>
             </div>
             <p className="mb-1">
-                Generación de emails de {process?.clientData?.name} <strong style={{
+                Generación de emails de <span style={{ fontStyle: 'italic' }}>{process?.clientData?.name}</span> <strong style={{
                     color: colors(process.entityId.toString())[0]
                 }}>Grupo{process.entityId}</strong>.
             </p>
