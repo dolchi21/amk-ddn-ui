@@ -33,7 +33,7 @@ export const autoLoadProcesses = async (dispatch: any, getState: any) => {
     setTimeout(async () => {
         while (true) {
             const state = getState()
-            if (state.data.auto) await loadProcesses(dispatch)
+            if (state.data.auto && !document.hidden) await loadProcesses(dispatch)
             await sleep(1000 * 1)
         }
     })
