@@ -10,14 +10,15 @@ const STATUS_ORDER: any = {
 export const loadProcesses = async (dispatch: any) => {
     const res = await fetch('http://icharlie.amtek.com.ar:3000/state')
     const data = await res.json()
+    const now = new Date()
     dispatch(Data.set({
         processes: Object.entries(data).map(([key, value]: any) => {
-            //const date = new Date(value.updatedAt)
+            const date = new Date(value.updatedAt)
             return {
                 ...value,
                 key,
-                //order: (Date.now() - date.valueOf()).toString()
-                order: `${STATUS_ORDER[value.status]}/${key}`
+                order: `${STATUS_ORDER[value.status]}/${(1000000000 + now.valueOf() - date.valueOf())}`
+                //order: `${STATUS_ORDER[value.status]}/${date.valueOf()}`
                 //order: key
             }
         }),
