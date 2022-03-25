@@ -17,7 +17,7 @@ export const loadProcesses = async (dispatch: any) => {
             return {
                 ...value,
                 key,
-                order: `${STATUS_ORDER[value.status]}/${(1000000000 + now.valueOf() - date.valueOf())}`
+                order: `${(1000000000 + now.valueOf() - date.valueOf())}`
                 //order: `${STATUS_ORDER[value.status]}/${date.valueOf()}`
                 //order: key
             }
