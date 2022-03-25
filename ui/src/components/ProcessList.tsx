@@ -73,13 +73,10 @@ const Process = (process: any) => {
 }
 
 const ProcessTitle = connect((state: any) => ({ selected: state.data.selected }), md2p)((process: any) => (
-    <h5 className="mb-1" style={{ cursor: 'pointer' }} onClick={() => {
+    <h5 className="mb-1" onClick={() => {
         const action = enqueue(process.client, process.entityId)
         action(process.dispatch)
     }}>
-        {`${process.client}:${process.entityId}` === process.selected && (
-            <i className="bi bi-caret-right-fill" style={{ marginRight: '0.5rem' }}></i>
-        )}
         <span className="badge" style={{
             backgroundColor: colors(process.client)[0],
             color: colors(process.client)[1]
@@ -98,8 +95,15 @@ const List = (props: any) => {
     return (
         <ul className="list-group">
             {props.items.map((process: any) => {
+                const [c0] = colors(process.client)
+                const selected = process.key === props.selected
+                const style: any = {
+                    cursor: 'pointer',
+                    //borderRight: selected && `10px solid ${c0}`,
+                    borderLeft: selected && `1rem solid ${c0}`,
+                }
                 return (
-                    <li key={process.key} className={`list-group-item ${ListItemClass[process.status]}`} onClick={() => selectProcess(props.selected === process.key ? null : process.key)(props.dispatch)}>
+                    <li style={style} key={process.key} className={`list-group-item ${ListItemClass[process.status]}`} onClick={() => selectProcess(props.selected === process.key ? null : process.key)(props.dispatch)}>
                         <Process {...process} />
                     </li>
                 )

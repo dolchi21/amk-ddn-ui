@@ -30,11 +30,14 @@ export const autoLoadProcesses = async (dispatch: any, getState: any) => {
     const state = getState()
     if (state.data.auto) return
     dispatch(Data.set({ auto: true }))
-    while (true) {
-        const state = getState()
-        if (state.data.auto) await loadProcesses(dispatch)
-        await sleep(1000 * 1)
-    }
+    setTimeout(async () => {
+        while (true) {
+            const state = getState()
+            if (state.data.auto) await loadProcesses(dispatch)
+            await sleep(1000 * 1)
+        }
+    })
+    return () => dispatch(Data.set({ auto: false }))
 }
 
 export const enqueue = (client: string, entityId: number) => async (dispatch: any) => {

@@ -5,21 +5,30 @@ import './App.css'
 import ProcessList from './components/ProcessList'
 import { makeStore } from './makeStore'
 
-function App() {
-    return (
-        <div className="container">
-            <ProcessList />
-        </div>
-    )
+class App extends React.Component {
+    componentDidMount() {
+        //@ts-ignore
+        this.stop = A.autoLoadProcesses(this.props.store.dispatch, this.props.store.getState)
+    }
+    componentWillUnmount(){
+        //@ts-ignore
+        this.stop()
+    }
+    render() {
+        return (
+            <div className="container">
+                <ProcessList />
+            </div>
+        )
+    }
 }
 
 const CApp = (props: any) => {
     const store = makeStore()
     //A.loadProcesses(store.dispatch)
-    setTimeout(() => A.autoLoadProcesses(store.dispatch, store.getState))
     return (
         <Provider store={store}>
-            <App {...props} />
+            <App {...props} store={store} />
         </Provider>
     )
 }
