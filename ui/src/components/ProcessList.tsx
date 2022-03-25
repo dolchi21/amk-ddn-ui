@@ -59,7 +59,7 @@ const Process = (process: any) => {
                 <small>{date.toLocaleString()}</small>
             </div>
             <p className="mb-1">
-                Generación de emails de <span style={{ fontStyle: 'italic' }}>{process?.clientData?.name}</span> <strong style={{
+                Generación de emails de <strong style={{
                     color: colors(process.entityId.toString())[0]
                 }}>Grupo{process.entityId}</strong>.
             </p>
