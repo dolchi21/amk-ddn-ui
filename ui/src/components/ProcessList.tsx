@@ -67,9 +67,16 @@ const Process = (process: any) => {
             <div title={JSON.stringify(process, null, 2)}>
                 {process.error && <small>Error: {process.error}.</small>}
                 {!process.error && <small>Se generaron <strong style={{ color: colors(process.emailsGenerated.toString())[0] }}>{process.emailsGenerated}</strong> emails.</small>}
+                <ErrorsInfo {...process} />
             </div>
         </React.Fragment>
     )
+}
+
+const ErrorsInfo = (process: any) => {
+    const count = Object.keys(process.processError).length
+    if (!count) return null
+    return <small> Errores: {count}</small>
 }
 
 const ProcessTitle = connect((state: any) => ({ selected: state.data.selected }), md2p)((process: any) => (
